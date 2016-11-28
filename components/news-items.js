@@ -49,6 +49,11 @@ const styles = StyleSheet.create({
     color: '#333333',
     marginBottom: 5,
   },
+  bgImage: {
+    position: 'absolute',
+    flex: 1,
+    resizeMode: "cover"
+  }
 });
 
 
@@ -81,7 +86,7 @@ class Item extends Component {
     return (
    <Card style={{ flex: 0 }}>
        <CardItem>
-           <Text2>{this.props.title}</Text2>
+           <Text2 style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>{this.props.title}</Text2>
        </CardItem>
 
        <CardItem>
@@ -111,7 +116,8 @@ class NewsItems extends Component {
     return (
       <View style={styles.container}>
         {Header("Vaïss")}
-        <ScrollView style={[styles.container, {backgroundColor: 'black'}]}>
+        <Image style={styles.bgImage} source={require('../img/l4hLRa7nHSvd4qgG4.gif')} />
+        <ScrollView style={styles.container} >
           {this.state.data.map(createNewsItem)}
         </ScrollView>
       </View>

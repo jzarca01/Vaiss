@@ -70,7 +70,7 @@ class Item extends Component {
       super(props);
     }
 
-  _pressHander() {
+  _pressHandler() {
     console.log(this.props.link);
     SafariView.isAvailable()
       .then(SafariView.show({
@@ -95,7 +95,7 @@ class Item extends Component {
 
        <CardItem>
          <Text2>{this.props.content}</Text2>
-         <Button onPress={() => this._pressHandler}>
+         <Button onPress={() => this._pressHandler()}>
             Lire
          </Button>
        </CardItem>

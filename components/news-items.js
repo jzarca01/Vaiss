@@ -21,7 +21,7 @@ import {
  /* Components added */
  import { Container, Content, Card, CardItem, Thumbnail, Text as Text2, Button, Icon } from 'native-base';
  import SafariView from 'react-native-safari-view'
-
+ import Tabs from 'react-native-tabs';
 /* Stylesheet */
 
 const styles = StyleSheet.create({
@@ -70,7 +70,7 @@ class Item extends Component {
       super(props);
     }
 
-  _pressHander() {
+  _pressHandler() {
     console.log(this.props.link);
     SafariView.isAvailable()
       .then(SafariView.show({
@@ -95,7 +95,7 @@ class Item extends Component {
 
        <CardItem>
          <Text2>{this.props.content}</Text2>
-         <Button onPress={() => this._pressHandler}>
+         <Button onPress={() => this._pressHandler()}>
             Lire
          </Button>
        </CardItem>
@@ -108,8 +108,18 @@ class NewsItems extends Component {
   constructor() {
     super();
     this.state = {
-      data : []
+      data : [],
+      json_feed: 'https://api.rss2json.com/v1/api.json?rss_url=http%3A%2F%2Fwww.vice.com%2Ffr%2Frss',
     };
+  }
+
+  getData() {
+    fetch(this.state.json_feed)
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log('a');
+        this.setState({data: responseData.items});
+      })
   }
 
   render() {
@@ -117,7 +127,15 @@ class NewsItems extends Component {
       <View style={styles.container}>
         {Header("Vaïss")}
         <Image style={styles.bgImage} source={require('../img/l4hLRa7nHSvd4qgG4.gif')} />
-        <ScrollView style={styles.container} >
+        <Tabs selected={this.state.json_feed} style={{top: 0, position: 'absolute', backgroundColor:'white'}}
+              selectedStyle={{color:'red'}} onSelect={el=>this.setState({'json_feed': el.props.value})}>
+            <Text value="https://api.rss2json.com/v1/api.json?rss_url=http%3A%2F%2Fwww.vice.com%2Ffr%2Frss">Vice</Text>
+            <Text value="https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fmunchies.vice.com%2Ffr%2Ffeed">Munchies</Text>
+            <Text value="https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fnoisey.vice.com%2Ffr%2Frss">Noisey</Text>
+            <Text value="https://api.rss2json.com/v1/api.json?rss_url=http%3A%2F%2Fthecreatorsproject.vice.com%2Ffr%2Frss">The Creators Project</Text>
+
+        </Tabs>
+        <ScrollView style={styles.container}>
           {this.state.data.map(createNewsItem)}
         </ScrollView>
       </View>
@@ -125,17 +143,20 @@ class NewsItems extends Component {
   }
 
   componentWillMount() {
-    fetch("https://api.rss2json.com/v1/api.json?rss_url=http%3A%2F%2Fwww.vice.com%2Ffr%2Frss")
-      .then((response) => response.json())
-      .then((responseData) => {
-        console.log('a');
-        this.setState({data: responseData.items});
-
-      })
-      .done();
+    this.getData();
   }
+
+  shouldComponentUpdate(nextProps, nextState){
+      // return a boolean value
+      return true;
+  }
+
+  componentWillUpdate() {
+    this.getData();
+  }
+
 }
 
-var createNewsItem = (el, i) => <Item key={i} title={el.title} url={el.thumbnail} content={el.description} link={el.link}></Item>
+let createNewsItem = (el, i) => <Item key={i} title={el.title} url={(el.thumbnail) ? el.thumbnail : el.enclosure.link} content={el.description} link={el.link}></Item>
 
 module.exports = NewsItems;

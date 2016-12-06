@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { Image } from 'react-native';
-
-import SafariView from 'react-native-safari-view'
+import SafariView from 'react-native-safari-view';
 import { Card, CardItem, Text, Button } from 'native-base';
-
-import { _pressHandler } from '../containers/actions'
+import { _pressHandler } from '../containers/actions';
+import Image from 'react-native-image-progress';
+import ProgressBar from 'react-native-progress/Bar';
 
 export default class Item extends Component {
 
@@ -19,8 +18,8 @@ export default class Item extends Component {
            <Text style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>{this.props.title}</Text>
        </CardItem>
 
-       <CardItem>
-           <Image style={{ resizeMode: 'cover', width: null }} source={{uri : this.props.url}} />
+       <CardItem style={{flex: 1}}>
+           <Image style={{ resizeMode: 'cover', height: 240}} source={{uri : this.props.url}} indicator={ProgressBar} />
        </CardItem>
 
        <CardItem>

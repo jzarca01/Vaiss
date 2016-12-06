@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 /* Required */
 import React, { Component } from 'react';
 import {
@@ -19,9 +13,8 @@ import {
 } from 'react-native';
 
  /* Components added */
- import { Container, Content, Card, CardItem, Thumbnail, Text as Text2, Button, Icon } from 'native-base';
- import SafariView from 'react-native-safari-view'
  import Tabs from 'react-native-tabs';
+ import Item from './Item.js';
 /* Stylesheet */
 
 const styles = StyleSheet.create({
@@ -64,47 +57,8 @@ function Header(title) {
     );
 }
 
-class Item extends Component {
 
-  constructor(props) {
-      super(props);
-    }
-
-  _pressHandler() {
-    console.log(this.props.link);
-    SafariView.isAvailable()
-      .then(SafariView.show({
-        url: this.props.link,
-        readerMode: true
-      }))
-      .catch(error => {
-        // Fallback WebView code for iOS 8 and earlier
-      });
-    }
-
-  render() {
-    return (
-   <Card style={{ flex: 0 }}>
-       <CardItem>
-           <Text2 style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>{this.props.title}</Text2>
-       </CardItem>
-
-       <CardItem>
-           <Image style={{ resizeMode: 'cover', width: null }} source={{uri : this.props.url}} />
-       </CardItem>
-
-       <CardItem>
-         <Text2>{this.props.content}</Text2>
-         <Button onPress={() => this._pressHandler()}>
-            Lire
-         </Button>
-       </CardItem>
-  </Card>
-    );
-  }
-}
-
-class NewsItems extends Component {
+export default class NewsItems extends Component {
   constructor() {
     super();
     this.state = {
@@ -158,5 +112,3 @@ class NewsItems extends Component {
 }
 
 let createNewsItem = (el, i) => <Item key={i} title={el.title} url={(el.thumbnail) ? el.thumbnail : el.enclosure.link} content={el.description} link={el.link}></Item>
-
-module.exports = NewsItems;

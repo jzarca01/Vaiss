@@ -1,24 +1,13 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 /* Required */
 import React, { Component } from 'react';
 import {
   AppRegistry,
   StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  Image,
   Navigator
 } from 'react-native';
 
-
-let NewsItems = require('./components/news-items');
-let PageItem = require('./components/page-item');
+import NewsItems from './components/news-items';
+import PageItem from './components/page-item';
 
 const routes = {
   news_items: NewsItems,

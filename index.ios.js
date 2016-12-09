@@ -6,13 +6,13 @@ import {
   Navigator
 } from 'react-native';
 
-import NewsItems from './components/news-items';
-import PageItem from './components/page-item';
+import NewsItemsContainer from './components/news-items-container';
 
-const routes = {
-  news_items: NewsItems,
-  page_item: PageItem
-}
+import * as viewReducers from './reducers/view';
+import { createStore, combineReducers } from 'redux';
+import { Provider } from 'react-redux';
+
+let store = createStore(combineReducers(viewReducers));
 
 /* Stylesheet */
 const styles = StyleSheet.create({
@@ -44,27 +44,24 @@ const styles = StyleSheet.create({
 
 /* Components */
 
-class Vaiss extends Component {
-
-  renderScene(route, navigator) {
-   let Component = routes[route.name];
-   return (
-       <Component route={route} navigator={navigator} url={route.url} />
-   );
- }
+class App extends Component {
 
  render() {
    return (
-     <Navigator
-       style={styles.container}
-       initialRoute={{name: 'news_items', url: ''}}
-       renderScene={this.renderScene}
-       configureScene={() => { return Navigator.SceneConfigs.FloatFromRight; }} />
+     <NewsItemsContainer />
    );
 
  }
 }
 
-
+class Vaiss extends Component {
+  render() {
+    return (
+      <Provider store={store}>
+        <App />
+      </Provider>
+    )
+  }
+}
 /* Main */
 AppRegistry.registerComponent('Vaiss', () => Vaiss);

@@ -1,5 +1,5 @@
 /* Required */
-import React, { Component } from 'react';
+import React, { Component, PropType } from 'react';
 import {
   AppRegistry,
   StyleSheet,
@@ -12,18 +12,16 @@ import {
   WebView
 } from 'react-native';
 
+import * as viewReducers from '../reducers/view';
+
  /* Components added */
  import Tabs from 'react-native-tabs';
  import Item from './Item.js';
-/* Stylesheet */
+ import Spinner from 'react-native-loading-spinner-overlay';
 
+
+/* Stylesheet */
 const styles = StyleSheet.create({
-  title: {
-    height: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
   container: {
     flex: 1,
     marginTop: 10
@@ -33,19 +31,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     margin: 10,
   },
-  imgWelcome: {
-    flex: 0.5,
-    height: 100
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
   bgImage: {
     position: 'absolute',
     flex: 1,
     resizeMode: "cover"
+  },
+  tabbar: {
+    bottom: 0,
+    position: 'absolute',
+    backgroundColor:'white'
   }
 });
 
@@ -58,57 +52,52 @@ function Header(title) {
 }
 
 
-export default class NewsItems extends Component {
-  constructor() {
-    super();
-    this.state = {
-      data : [],
-      json_feed: 'https://api.rss2json.com/v1/api.json?rss_url=http%3A%2F%2Fwww.vice.com%2Ffr%2Frss',
-    };
+class NewsItems extends Component {
+
+  static propTypes = {
+    selectedTab : PropType.string.isRequired,
+    json_feed : PropType.string.isRequired,
+    data: PropType.array.isRequired,
+    loading:  PropType.bool.isRequired,
   }
 
-  getData() {
-    fetch(this.state.json_feed)
-      .then((response) => response.json())
-      .then((responseData) => {
-        console.log('a');
-        this.setState({data: responseData.items});
-      })
+  _renderContent() {
+    return (
+      <ScrollView style={{"flex": 1}}>
+        {this.state.view.data.map(createNewsItem)}
+      </ScrollView>
+    );
+  }
+
+  _renderLoading() {
+    return (
+      <Spinner
+        visible={this.props.view.loading}
+        textContent={"Chargement des derniers articles..."}
+        textStyle={{color: '#FFF'}} />
+    );
   }
 
   render() {
     return (
-      <View style={styles.container}>
-        {Header("Vaïss")}
-        <Image style={styles.bgImage} source={require('../img/l4hLRa7nHSvd4qgG4.gif')} />
-        <Tabs selected={this.state.json_feed} style={{top: 0, position: 'absolute', backgroundColor:'white'}}
-              selectedStyle={{color:'red'}} onSelect={el=>this.setState({'json_feed': el.props.value})}>
-            <Text value="https://api.rss2json.com/v1/api.json?rss_url=http%3A%2F%2Fwww.vice.com%2Ffr%2Frss">Vice</Text>
-            <Text value="https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fmunchies.vice.com%2Ffr%2Ffeed">Munchies</Text>
-            <Text value="https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fnoisey.vice.com%2Ffr%2Frss">Noisey</Text>
-            <Text value="https://api.rss2json.com/v1/api.json?rss_url=http%3A%2F%2Fthecreatorsproject.vice.com%2Ffr%2Frss">The Creators Project</Text>
+        <View style={styles.container}>
+          {Header(this.props.view.selectedTab)}
+          <Image style={styles.bgImage} source={require('../img/l4hLRa7nHSvd4qgG4.gif')} />
 
-        </Tabs>
-        <ScrollView style={styles.container}>
-          {this.state.data.map(createNewsItem)}
-        </ScrollView>
-      </View>
-    );
-  }
+          {this._renderLoading()}
+          {this._renderContent()}
 
-  componentWillMount() {
-    this.getData();
-  }
+          <Tabs selected={this.props.view.json_feed} style={styles.tabbar}
+                selectedStyle={{color:'red'}} onSelect={el=>this.setState({'loading': true, 'json_feed': el.props.value, 'selectedTab': el.props.name})}>
+              <Text name="Vice" value="https://api.rss2json.com/v1/api.json?rss_url=http%3A%2F%2Fwww.vice.com%2Ffr%2Frss">Vice</Text>
+              <Text name="Munchies" value="https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fmunchies.vice.com%2Ffr%2Ffeed">Munchies</Text>
+              <Text name="Noisey" value="https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fnoisey.vice.com%2Ffr%2Frss">Noisey</Text>
+              <Text name="The Creators Project" value="https://api.rss2json.com/v1/api.json?rss_url=http%3A%2F%2Fthecreatorsproject.vice.com%2Ffr%2Frss">The Creators Project</Text>
+          </Tabs>
 
-  shouldComponentUpdate(nextProps, nextState){
-      // return a boolean value
-      return true;
-  }
-
-  componentWillUpdate() {
-    this.getData();
-  }
-
+        </View>
+      );
+    }
 }
 
 let createNewsItem = (el, i) => <Item key={i} title={el.title} url={(el.thumbnail) ? el.thumbnail : el.enclosure.link} content={el.description} link={el.link}></Item>

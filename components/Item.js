@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import SafariView from 'react-native-safari-view';
 import { Card, CardItem, Text, Button } from 'native-base';
 import { _pressHandler } from '../containers/actions';
 import Image from 'react-native-image-progress';

@@ -1,3 +1,4 @@
+import SafariView from 'react-native-safari-view';
 
 export const _pressHandler = (link) => {
   console.log(link);

@@ -13,11 +13,14 @@ export function changeView(newState) {
 }
 
 export function loadData(newState) {
-  fetch(this.props.view.json_feed)
-     .then((response) => response.json())
-     .then((responseData) => {
-       dispatch(dataLoaded(responseData.items))
-     })
+
+  return function (dispatch) {
+    fetch(newState.json_feed)
+       .then((response) => response.json())
+       .then((responseData) => {
+         dispatch(dataLoaded(responseData.items))
+       });
+    };
 
 }
 

@@ -7,12 +7,12 @@ import {
 } from 'react-native';
 
 import NewsItemsContainer from './components/news-items-container';
-
 import * as viewReducers from './reducers/view';
-import { createStore, combineReducers } from 'redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 
-let store = createStore(combineReducers(viewReducers));
+let store = createStore(combineReducers(viewReducers), applyMiddleware(thunk));
 
 /* Stylesheet */
 const styles = StyleSheet.create({

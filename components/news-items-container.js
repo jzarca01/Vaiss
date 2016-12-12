@@ -2,16 +2,14 @@ import NewsItems from './news-items';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import {getData} from '../actions';
+import { loadData } from '../actions'
 
 function mapStateToProps(state) {
-  return {
-    ...state.view
-  };
+  return state;
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({loadData}, dispatch);
+  return bindActionCreators(loadData, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewsItems);
+export default connect(mapStateToProps, mapDispatchToProps)(NewsItems)

@@ -1,5 +1,5 @@
 /* Required */
-import React, { Component, PropType } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
   AppRegistry,
   StyleSheet,
@@ -52,19 +52,19 @@ function Header(title) {
 }
 
 
-class NewsItems extends Component {
+export default class NewsItems extends Component {
 
   static propTypes = {
-    selectedTab : PropType.string.isRequired,
-    json_feed : PropType.string.isRequired,
-    data: PropType.array.isRequired,
-    loading:  PropType.bool.isRequired,
+    selectedTab : PropTypes.string.isRequired,
+    json_feed : PropTypes.string.isRequired,
+    data: PropTypes.array.isRequired,
+    loading:  PropTypes.bool.isRequired,
   }
 
   _renderContent() {
     return (
       <ScrollView style={{"flex": 1}}>
-        {this.state.view.data.map(createNewsItem)}
+        {this.props.data.map(createNewsItem)}
       </ScrollView>
     );
   }
@@ -72,7 +72,7 @@ class NewsItems extends Component {
   _renderLoading() {
     return (
       <Spinner
-        visible={this.props.view.loading}
+        visible={this.props.loading}
         textContent={"Chargement des derniers articles..."}
         textStyle={{color: '#FFF'}} />
     );
@@ -81,13 +81,13 @@ class NewsItems extends Component {
   render() {
     return (
         <View style={styles.container}>
-          {Header(this.props.view.selectedTab)}
+          {Header(this.props.selectedTab)}
           <Image style={styles.bgImage} source={require('../img/l4hLRa7nHSvd4qgG4.gif')} />
 
           {this._renderLoading()}
           {this._renderContent()}
 
-          <Tabs selected={this.props.view.json_feed} style={styles.tabbar}
+          <Tabs selected={this.props.json_feed} style={styles.tabbar}
                 selectedStyle={{color:'red'}} onSelect={el=>this.setState({'loading': true, 'json_feed': el.props.value, 'selectedTab': el.props.name})}>
               <Text name="Vice" value="https://api.rss2json.com/v1/api.json?rss_url=http%3A%2F%2Fwww.vice.com%2Ffr%2Frss">Vice</Text>
               <Text name="Munchies" value="https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fmunchies.vice.com%2Ffr%2Ffeed">Munchies</Text>

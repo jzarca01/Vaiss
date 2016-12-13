@@ -1,18 +1,14 @@
 /* Required */
 import React, { Component, PropTypes } from 'react';
 import {
-  AppRegistry,
-  StyleSheet,
-  Text,
   View,
-  ScrollView,
   Image,
-  Navigator,
-  TouchableOpacity,
-  WebView
+  StyleSheet,
+  ScrollView,
+  Text
 } from 'react-native';
 
-import * as viewReducers from '../reducers/view';
+import * as viewReducers from '../reducers/viewReducer';
 
  /* Components added */
  import Tabs from 'react-native-tabs';
@@ -45,10 +41,10 @@ const styles = StyleSheet.create({
 
 
 
-function Header(title) {
-    return (
-      <Text style={styles.welcome}>{title}</Text>
-    );
+function Header(props) {
+  return (
+    <Text style={styles.welcome}>{props.title}</Text>
+  );
 }
 
 
@@ -59,6 +55,22 @@ export default class NewsItems extends Component {
     json_feed : PropTypes.string.isRequired,
     data: PropTypes.array.isRequired,
     loading:  PropTypes.bool.isRequired,
+    loadData: PropTypes.func.isRequired,
+    changeView: PropTypes.func.isRequired
+  }
+
+  componentDidMount() {
+    this.props.loadData(this.props);
+  }
+
+  _changeView(el) {
+    this.props.changeView({'loading': true, 'json_feed': el.props.value, 'selectedTab': el.props.name});
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+      if (prevProps.json_feed !== this.props.json_feed) {
+        return this.props.loadData(this.props)
+      }
   }
 
   _renderContent() {
@@ -81,14 +93,14 @@ export default class NewsItems extends Component {
   render() {
     return (
         <View style={styles.container}>
-          {Header(this.props.selectedTab)}
+          <Header title={this.props.selectedTab} />
           <Image style={styles.bgImage} source={require('../img/l4hLRa7nHSvd4qgG4.gif')} />
 
           {this._renderLoading()}
           {this._renderContent()}
 
           <Tabs selected={this.props.json_feed} style={styles.tabbar}
-                selectedStyle={{color:'red'}} onSelect={el=>this.setState({'loading': true, 'json_feed': el.props.value, 'selectedTab': el.props.name})}>
+                selectedStyle={{color:'red'}} onSelect={el=>this._changeView(el)}>
               <Text name="Vice" value="https://api.rss2json.com/v1/api.json?rss_url=http%3A%2F%2Fwww.vice.com%2Ffr%2Frss">Vice</Text>
               <Text name="Munchies" value="https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fmunchies.vice.com%2Ffr%2Ffeed">Munchies</Text>
               <Text name="Noisey" value="https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fnoisey.vice.com%2Ffr%2Frss">Noisey</Text>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Card, CardItem, Text, Button } from 'native-base';
-import { _pressHandler } from '../containers/actions';
-import Image from 'react-native-image-progress';
+import { Text } from 'react-native'
+import { Card, ListItem, Button } from 'react-native-elements'
+import { _pressHandler } from '../actions/actions';
 import ProgressBar from 'react-native-progress/Bar';
 
 export default class Item extends Component {
@@ -12,22 +12,18 @@ export default class Item extends Component {
 
   render() {
     return (
-   <Card style={{ flex: 0 }}>
-       <CardItem>
-           <Text style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>{this.props.title}</Text>
-       </CardItem>
-
-       <CardItem style={{flex: 1}}>
-           <Image style={{ resizeMode: 'cover', height: 240}} source={{uri : this.props.url}} indicator={ProgressBar} />
-       </CardItem>
-
-       <CardItem>
-         <Text>{this.props.content}</Text>
-         <Button onPress={() => _pressHandler(this.props.link)}>
-            Lire
-         </Button>
-       </CardItem>
-  </Card>
+      <Card
+      title={this.props.title}
+      image={{uri : this.props.url}} indicator={ProgressBar}>
+        <Text style={{margin: 10}}>
+          {this.props.content}
+        </Text>
+        <Button onPress={() => _pressHandler(this.props.link)}
+          icon={{name: 'code'}}
+          backgroundColor='#03A9F4'
+          buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0}}
+          title="Lire l'article"/>
+      </Card>
     );
   }
 }

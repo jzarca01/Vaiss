@@ -1,4 +1,4 @@
-import { CHANGE_VIEW, LOAD_DATA, DATA_LOADED } from '../actions/';
+import { CHANGE_VIEW, LOAD_DATA, DATA_LOADED } from '../containers/';
 
 let cloneObject = function(obj) {
   return JSON.parse(JSON.stringify(obj))
@@ -17,6 +17,8 @@ export default function(state = newState, action) {
       newState = cloneObject(state);
       newState.selectedTab = action.selectedTab;
       newState.json_feed = action.json_feed;
+      newState.data = action.data;
+      newState.loading = action.loading;
       return newState;
     case LOAD_DATA:
       newState = cloneObject(state);
@@ -28,6 +30,6 @@ export default function(state = newState, action) {
       newState.loading = action.loading;
       return newState;
     default:
-      return state || newState;
+      return state;
   }
 }

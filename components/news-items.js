@@ -5,22 +5,25 @@ import {
   Image,
   StyleSheet,
   ScrollView,
-  Text
+  Text,
+  Alert,
 } from 'react-native';
 
+import { menuContent } from './menuContainer'
 import * as viewReducers from '../reducers/viewReducer';
 
  /* Components added */
+ import { Header, Title, Button, Icon } from "native-base";
  import Tabs from 'react-native-tabs';
  import Item from './Item.js';
  import Spinner from 'react-native-loading-spinner-overlay';
+
 
 
 /* Stylesheet */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 10
   },
   welcome: {
     fontSize: 20,
@@ -36,18 +39,39 @@ const styles = StyleSheet.create({
     bottom: 0,
     position: 'absolute',
     backgroundColor:'white'
+  },
+  menuItem: {
+    fontSize: 10
   }
 });
 
-
-
-function Header(props) {
+/* Functions */
+function createHeader(el) {
   return (
-    <Text style={styles.welcome}>{props.title}</Text>
+        <Header>
+
+            <Title>{el.title}</Title>
+
+            <Button transparent
+              onPress={() => Alert.alert(
+                    'Vaïss',
+                    "Fait par Jérémie Zarca, avec beaucoup d'amour.",
+                    [
+                      {text: 'Merci Vaïss c\'est top !', onPress: () => console.log('OK Pressed!')},
+                    ]
+                  )}>
+                <Icon name='ios-information-circle' />
+            </Button>
+
+        </Header>
   );
 }
 
+let createNewsItem = (el, i) => <Item key={i} title={el.title} url={(el.thumbnail) ? el.thumbnail : el.enclosure.link} content={el.description} link={el.link}></Item>
+let createMenuItem = (el, i) => <Text style={styles.menuItem} key={i} name={el.name} value={el.value}>{el.name}</Text>
 
+
+/* Classes */
 export default class NewsItems extends Component {
 
   static propTypes = {
@@ -67,15 +91,18 @@ export default class NewsItems extends Component {
     this.props.changeView({'loading': true, 'json_feed': el.props.value, 'selectedTab': el.props.name});
   }
 
-  componentDidUpdate(prevProps, prevState) {
-      if (prevProps.json_feed !== this.props.json_feed) {
-        return this.props.loadData(this.props)
-      }
+  _renderMenu() {
+    return (
+      <Tabs selected={this.props.selectedTab} style={styles.tabbar}
+            selectedStyle={{fontWeight:'bold'}} onSelect={el=>this._changeView(el)}>
+            {menuContent.map(createMenuItem)}
+      </Tabs>
+    )
   }
 
   _renderContent() {
     return (
-      <ScrollView style={{"flex": 1}}>
+      <ScrollView style={{"marginTop": 10, "flex": 1}}>
         {this.props.data.map(createNewsItem)}
       </ScrollView>
     );
@@ -93,23 +120,12 @@ export default class NewsItems extends Component {
   render() {
     return (
         <View style={styles.container}>
-          <Header title={this.props.selectedTab} />
-          <Image style={styles.bgImage} source={require('../img/l4hLRa7nHSvd4qgG4.gif')} />
+          {createHeader({"title":this.props.selectedTab}) }
 
           {this._renderLoading()}
           {this._renderContent()}
-
-          <Tabs selected={this.props.json_feed} style={styles.tabbar}
-                selectedStyle={{color:'red'}} onSelect={el=>this._changeView(el)}>
-              <Text name="Vice" value="https://api.rss2json.com/v1/api.json?rss_url=http%3A%2F%2Fwww.vice.com%2Ffr%2Frss">Vice</Text>
-              <Text name="Munchies" value="https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fmunchies.vice.com%2Ffr%2Ffeed">Munchies</Text>
-              <Text name="Noisey" value="https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fnoisey.vice.com%2Ffr%2Frss">Noisey</Text>
-              <Text name="The Creators Project" value="https://api.rss2json.com/v1/api.json?rss_url=http%3A%2F%2Fthecreatorsproject.vice.com%2Ffr%2Frss">The Creators Project</Text>
-          </Tabs>
-
+          {this._renderMenu()}
         </View>
       );
     }
 }
-
-let createNewsItem = (el, i) => <Item key={i} title={el.title} url={(el.thumbnail) ? el.thumbnail : el.enclosure.link} content={el.description} link={el.link}></Item>

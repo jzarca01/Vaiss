@@ -4,14 +4,14 @@ let cloneObject = function(obj) {
   return JSON.parse(JSON.stringify(obj))
 }
 
-let newState = {
+let defaultState = {
     "selectedTab": "Vice",
     "json_feed": 'https://api.rss2json.com/v1/api.json?rss_url=http%3A%2F%2Fwww.vice.com%2Ffr%2Frss',
     "data": [],
     "loading": true
 }
 
-export default function(state = newState, action) {
+export default function(state = defaultState, action) {
   switch ( action.type ) {
     case CHANGE_VIEW:
       newState = cloneObject(state);
